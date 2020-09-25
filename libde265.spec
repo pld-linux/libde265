@@ -6,13 +6,13 @@
 Summary:	H.265/HEVC video decoder
 Summary(pl.UTF-8):	Dekoder obrazu H.265/HEVC
 Name:		libde265
-Version:	1.0.5
+Version:	1.0.7
 Release:	1
 License:	LGPL v3+ (library), GPL v3+ (programs)
 Group:		Libraries
 #Source0Download: https://github.com/strukturag/libde265/releases/
 Source0:	https://github.com/strukturag/libde265/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	385c88166cb255a068a8c936d0ab23ef
+# Source0-md5:	5e73acf5142667969456d7968305b8a6
 URL:		http://www.libde265.org/
 BuildRequires:	SDL-devel
 BuildRequires:	autoconf >= 2.68
