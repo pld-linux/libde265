@@ -46,7 +46,7 @@ Summary:	Encoding and decoding tools for libde265 library
 Summary(pl.UTF-8):	Narzędzia kodujące i dekodujące dla biblioteki libde265
 License:	LGPL v3+ (library), GPL v3+ (programs)
 Group:		Applications/Graphics
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description tools
 Encoding and decoding tools for libde265 library.
@@ -58,7 +58,7 @@ Narzędzia kodujące i dekodujące dla biblioteki libde265.
 Summary:	Visual inspection tool (sherlock265) for libde265 library
 Summary(pl.UTF-8):	Narzędzie do wizualnego badania (sherlock265) dla biblioteki libde265
 Group:		X11/Applications/Graphics
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description gui
 Visual inspection tool (sherlock265) for libde265 library.
@@ -71,8 +71,8 @@ Summary:	Header files for libde265 library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libde265
 License:	LGPL v3+
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libstdc++-devel
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	libstdc++-devel%{?_isa}
 
 %description devel
 Header files for libde265 library.
@@ -85,7 +85,7 @@ Summary:	Static libde265 library
 Summary(pl.UTF-8):	Statyczna biblioteka libde265
 License:	LGPL v3+
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description static
 Static libde265 library.
