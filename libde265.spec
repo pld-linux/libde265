@@ -1,26 +1,24 @@
 #
 # Conditional build:
 %bcond_without	qt		# Qt based visual inspection GUI (sherlock265)
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static library
 #
 Summary:	H.265/HEVC video decoder
 Summary(pl.UTF-8):	Dekoder obrazu H.265/HEVC
 Name:		libde265
-Version:	1.0.16
+Version:	1.0.18
 Release:	1
-License:	LGPL v3+ (library), GPL v3+ (programs)
+License:	LGPL v3+ (library), MIT (programs)
 Group:		Libraries
 #Source0Download: https://github.com/strukturag/libde265/releases/
 Source0:	https://github.com/strukturag/libde265/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	f3173ff6fa273e139de19e6e77bec9b6
+# Source0-md5:	1c14b8da1ce75ed87ede01274d4eb15d
 URL:		https://www.libde265.org/
 BuildRequires:	SDL2-devel >= 2
-BuildRequires:	autoconf >= 2.68
-BuildRequires:	automake
+BuildRequires:	cmake >= 3.16.3
 # libswscale
 BuildRequires:	ffmpeg-devel
-BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:2
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libvideogfx-devel
 BuildRequires:	pkgconfig
 %if %{with qt}
@@ -42,17 +40,17 @@ Została napisana od zera i ma API w czystym C, pozwalające na prostą
 integrację w innym oprogramowaniu.
 
 %package tools
-Summary:	Encoding and decoding tools for libde265 library
-Summary(pl.UTF-8):	Narzędzia kodujące i dekodujące dla biblioteki libde265
+Summary:	Decoding tool for libde265 library
+Summary(pl.UTF-8):	Narzędzie dekodujące dla biblioteki libde265
 License:	LGPL v3+ (library), GPL v3+ (programs)
 Group:		Applications/Graphics
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description tools
-Encoding and decoding tools for libde265 library.
+Decoding tool for libde265 library.
 
 %description tools -l pl.UTF-8
-Narzędzia kodujące i dekodujące dla biblioteki libde265.
+Narzędzie dekodujące dla biblioteki libde265.
 
 %package gui
 Summary:	Visual inspection tool (sherlock265) for libde265 library
@@ -97,28 +95,28 @@ Statyczna biblioteka libde265.
 %setup -q
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--enable-encoder \
-	%{!?with_qt:--disable-sherlock265} \
-	%{!?with_static_libs:--disable-static}
-%{__make}
+%if %{with static_libs}
+%cmake -B build-static \
+	-DBUILD_SHARED_LIBS=OFF
+
+%{__make} -C build-static
+%endif
+
+%cmake -B build \
+	%{?with_qt:-DENABLE_SHERLOCK265=ON} \
+
+%{__make} -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%if %{with static_libs}
+%{__make} -C build-static install \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
-# examples
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/{bjoentegaard,block-rate-estim,gen-enc-table,rd-curves,tests,yuv-distortion}
-
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+%{__make} -C build install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,29 +127,29 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS NEWS README.md
-%attr(755,root,root) %{_libdir}/libde265.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libde265.so.0
+%{_libdir}/libde265.so.*.*.*
+%ghost %{_libdir}/libde265.so.0
 
 %files tools
 %defattr(644,root,root,755)
+%doc dec265/COPYING
 # R: SDL libvideogfx
 %attr(755,root,root) %{_bindir}/dec265
-# R: (only base)
-%attr(755,root,root) %{_bindir}/enc265
 
 %if %{with qt}
 %files gui
 %defattr(644,root,root,755)
-%doc sherlock265/README
+%doc sherlock265/{COPYING,README}
 # R: Qt5 (Core Gui Widgets) ffmpeg/libswscale
 %attr(755,root,root) %{_bindir}/sherlock265
 %endif
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libde265.so
+%{_libdir}/libde265.so
 %{_includedir}/libde265
 %{_pkgconfigdir}/libde265.pc
+%{_libdir}/cmake/libde265
 
 %if %{with static_libs}
 %files static
