@@ -7,7 +7,7 @@ Summary:	H.265/HEVC video decoder
 Summary(pl.UTF-8):	Dekoder obrazu H.265/HEVC
 Name:		libde265
 Version:	1.1.2
-Release:	3
+Release:	4
 License:	LGPL v3+ (library), MIT (programs)
 Group:		Libraries
 #Source0Download: https://github.com/strukturag/libde265/releases/
